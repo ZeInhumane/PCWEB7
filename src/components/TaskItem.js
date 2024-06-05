@@ -30,7 +30,7 @@ function TaskItem({ task, onDeleteTask }) {
         };
 
         fetchUsers();
-    }, []);
+    }, [showModal]);
 
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
