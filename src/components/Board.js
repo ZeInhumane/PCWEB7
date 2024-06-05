@@ -43,7 +43,7 @@ function Board() {
 
     return (
         <Container fluid>
-            <h1 className="text-center my-4">Task Board</h1>
+            <h1 className="text-center my-4">Task Manager</h1>
             <Row>
                 <Col md={4}>
                     <TaskList

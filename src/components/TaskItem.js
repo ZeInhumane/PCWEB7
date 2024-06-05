@@ -3,6 +3,8 @@ import { Card, Button, Modal, Form } from 'react-bootstrap';
 import { useDrag } from 'react-dnd';
 import { doc, updateDoc, deleteDoc, getDocs, collection } from 'firebase/firestore';
 import { db } from '../firebase';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function TaskItem({ task, onDeleteTask }) {
     const [{ isDragging }, drag] = useDrag(() => ({
@@ -33,19 +35,15 @@ function TaskItem({ task, onDeleteTask }) {
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
 
-    const handleChangeSeverity = async (newSeverity) => {
-        const taskDoc = doc(db, 'tasks', task.id);
-        await updateDoc(taskDoc, { severity: newSeverity });
-        setSeverity(newSeverity);  // Update local state
-    };
-
     const handleDelete = async () => {
         try {
             const taskDoc = doc(db, 'tasks', task.id);
             await deleteDoc(taskDoc);
             onDeleteTask(task.id);
+            toast.success("Task deleted successfully!");
         } catch (error) {
             console.error("Error deleting task: ", error);
+            toast.error("Error deleting task!");
         }
     };
 
@@ -53,51 +51,39 @@ function TaskItem({ task, onDeleteTask }) {
         e.preventDefault();
         const taskDoc = doc(db, 'tasks', task.id);
         await updateDoc(taskDoc, { title, description, severity, assignedTo });
+        toast.success("Task updated successfully!");
         handleClose();
+    };
+
+    const getSeverityVariant = () => {
+        switch (severity) {
+            case 'High':
+                return 'danger';
+            case 'Medium':
+                return 'warning';
+            case 'Low':
+                return 'success';
+            default:
+                return 'secondary';
+        }
     };
 
     return (
         <>
-            <Card ref={drag} className="mb-2" style={{ opacity: isDragging ? 0.5 : 1 }}>
+            <Card ref={drag} className="mb-2 shadow-sm" style={{ opacity: isDragging ? 0.5 : 1, borderLeft: `5px solid var(--bs-${getSeverityVariant()})` }}>
                 <Card.Body>
                     <Card.Title>{task.title}</Card.Title>
                     <Card.Text>{task.description}</Card.Text>
-                    <Card.Text><strong>Severity:</strong> {severity}</Card.Text>
+                    <Card.Text><strong>Severity:</strong> <span className={`text-${getSeverityVariant()}`}>{severity}</span></Card.Text>
                     <Card.Text><strong>Status:</strong> {task.status}</Card.Text>
                     <Card.Text><strong>Assigned To:</strong> {assignedTo}</Card.Text>
-                    <div className="d-flex justify-content-between">
-                        <div>
-                            <Button
-                                variant="outline-secondary"
-                                size="sm"
-                                onClick={() => handleChangeSeverity('Low')}
-                            >
-                                Low
-                            </Button>
-                            <Button
-                                variant="outline-warning"
-                                size="sm"
-                                className="mx-1"
-                                onClick={() => handleChangeSeverity('Medium')}
-                            >
-                                Medium
-                            </Button>
-                            <Button
-                                variant="outline-danger"
-                                size="sm"
-                                onClick={() => handleChangeSeverity('High')}
-                            >
-                                High
-                            </Button>
-                        </div>
-                        <div>
-                            <Button variant="primary" size="sm" onClick={handleShow} className="mr-1">
-                                Edit
-                            </Button>
-                            <Button variant="danger" size="sm" onClick={handleDelete}>
-                                Delete
-                            </Button>
-                        </div>
+                    <div className="d-flex justify-content-end mt-3">
+                        <Button variant="primary" size="sm" onClick={handleShow} className="mr-2">
+                            Edit
+                        </Button>
+                        <Button variant="danger" size="sm" onClick={handleDelete}>
+                            Delete
+                        </Button>
                     </div>
                 </Card.Body>
             </Card>
@@ -114,14 +100,17 @@ function TaskItem({ task, onDeleteTask }) {
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
+                                placeholder="Enter task title"
                             />
                         </Form.Group>
                         <Form.Group controlId="description">
                             <Form.Label>Description</Form.Label>
                             <Form.Control
-                                type="text"
+                                as="textarea"
+                                rows={3}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Enter task description"
                             />
                         </Form.Group>
                         <Form.Group controlId="severity">
@@ -155,6 +144,8 @@ function TaskItem({ task, onDeleteTask }) {
                     </Form>
                 </Modal.Body>
             </Modal>
+
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
         </>
     );
 }

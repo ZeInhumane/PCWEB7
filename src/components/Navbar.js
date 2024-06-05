@@ -18,7 +18,7 @@ function CustomNavbar() {
     return (
         <>
             <Navbar bg="primary" variant="dark" expand="lg" className="px-3">
-                <Navbar.Brand href="/">Task Board</Navbar.Brand>
+                <Navbar.Brand href="/">Task Manager</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ml-auto">
