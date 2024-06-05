@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './views/HomePage';
 import LoginPage from './views/LoginPage';
 import SignUpPage from './views/SignUpPage';
+import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './AuthProvider';
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<PrivateRoute component={HomePage} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
         </Routes>
