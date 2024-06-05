@@ -1,61 +1,74 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
-import { Button, Container, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-
+import React, { useRef, useState } from 'react';
+import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
+import { useAuth } from '../AuthProvider';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignUpPage() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const passwordConfirmRef = useRef();
+    const usernameRef = useRef();
+    const { signup } = useAuth();
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    return (
-        <Container>
-            <h1 className="my-3">Sign up for an account</h1>
-            <Form>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Enter email"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <Form.Text className="text-muted">
-                        We'll never share your email with anyone else.
-                    </Form.Text>
-                </Form.Group>
+    async function handleSubmit(e) {
+        e.preventDefault();
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <a href="/login">Have an existing account? Login here.</a>
-                </Form.Group>
-                <Button
-                    variant="primary"
-                    onClick={async (e) => {
-                        setError("");
-                        const canSignup = username && password;
-                        if (canSignup)
-                            try {
-                                await createUserWithEmailAndPassword(auth, username, password);
-                                navigate("/");
-                            } catch (error) {
-                                setError(error.message);
-                            }
-                    }}
-                >
-                    Sign Up
-                </Button>
-            </Form>
-            <p>{error}</p>
+        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+            return setError('Passwords do not match');
+        }
+
+        try {
+            setError('');
+            setLoading(true);
+            await signup(emailRef.current.value, passwordRef.current.value, usernameRef.current.value);
+            navigate('/');
+        } catch (error){
+            setError(error.message);
+        }
+
+        setLoading(false);
+    }
+
+    return (
+        <Container
+            className="d-flex align-items-center justify-content-center"
+            style={{ minHeight: '100vh' }}
+        >
+            <div className="w-100" style={{ maxWidth: '400px' }}>
+                <Card>
+                    <Card.Body>
+                        <h2 className="text-center mb-4">Sign Up</h2>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group id="username">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control type="text" ref={usernameRef} required />
+                            </Form.Group>
+                            <Form.Group id="email" className="mt-3">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control type="email" ref={emailRef} required />
+                            </Form.Group>
+                            <Form.Group id="password" className="mt-3">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control type="password" ref={passwordRef} required />
+                            </Form.Group>
+                            <Form.Group id="password-confirm" className="mt-3">
+                                <Form.Label>Password Confirmation</Form.Label>
+                                <Form.Control type="password" ref={passwordConfirmRef} required />
+                            </Form.Group>
+                            <Button disabled={loading} className="w-100 mt-4" type="submit">
+                                Sign Up
+                            </Button>
+                        </Form>
+                    </Card.Body>
+                </Card>
+                <div className="w-100 text-center mt-2">
+                    Already have an account? <Link to="/login">Log In</Link>
+                </div>
+            </div>
         </Container>
     );
 }

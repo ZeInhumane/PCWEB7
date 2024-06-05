@@ -1,28 +1,22 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LoginPage from "./views/LoginPage";
-import PostPageAdd from "./views/PostPageAdd";
-import PostPageDetails from "./views/PostPageDetails";
-import PostPageHome from "./views/PostPageHome";
-import PostPageUpdate from "./views/PostPageUpdate";
-import SignUpPage from "./views/SignUpPage";
-
-
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './views/HomePage';
+import LoginPage from './views/LoginPage';
+import SignUpPage from './views/SignUpPage';
+import { AuthProvider } from './AuthProvider';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<PostPageHome />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/add" element={<PostPageAdd />} />
-        <Route path="/post/:id" element={<PostPageDetails />} />
-        <Route path="/update/:id" element={<PostPageUpdate />} />
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
 export default App;
-
-

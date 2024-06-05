@@ -1,0 +1,30 @@
+/* styles.css */
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  margin: 2rem 0;
+  font-size: 2.5rem;
+}
+
+.task-list {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #f8f9fa;
+}
+
+.TaskItem {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  background-color: white;
+}
+
+.TaskForm {
+  margin: 2rem 0;
+}
