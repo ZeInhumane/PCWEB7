@@ -3,9 +3,11 @@ import { Form, Button } from 'react-bootstrap';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../AuthProvider';
+import { useTheme } from '../ThemeContext';
 
 function TaskForm({ onClose }) {
     const { currentUser } = useAuth();
+    const { theme } = useTheme();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('To Do');
@@ -46,7 +48,7 @@ function TaskForm({ onClose }) {
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className={`task-form ${theme}`}>
             <Form.Group controlId="title" className="mb-3">
                 <Form.Label>Title</Form.Label>
                 <Form.Control

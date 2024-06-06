@@ -4,10 +4,11 @@ import { collection, query, where, onSnapshot, doc, updateDoc, getDocs } from 'f
 import { db } from '../firebase';
 import TaskList from './TaskList';
 import { useAuth } from '../AuthProvider';
-import Navbar from './Navbar';
+import { useTheme } from '../ThemeContext';
 
 function Board() {
     const { currentUser } = useAuth();
+    const { theme } = useTheme();
     const [tasks, setTasks] = useState([]);
     const [users, setUsers] = useState([]);
 
@@ -42,35 +43,37 @@ function Board() {
     };
 
     return (
-        <Container fluid>
-            <h1 className="text-center my-4">Task Manager</h1>
-            <Row>
-                <Col md={4}>
-                    <TaskList
-                        status="To Do"
-                        tasks={tasks.filter((task) => task.status === 'To Do')}
-                        onDropTask={handleDropTask}
-                        users={users}
-                    />
-                </Col>
-                <Col md={4}>
-                    <TaskList
-                        status="In Progress"
-                        tasks={tasks.filter((task) => task.status === 'In Progress')}
-                        onDropTask={handleDropTask}
-                        users={users}
-                    />
-                </Col>
-                <Col md={4}>
-                    <TaskList
-                        status="Done"
-                        tasks={tasks.filter((task) => task.status === 'Done')}
-                        onDropTask={handleDropTask}
-                        users={users}
-                    />
-                </Col>
-            </Row>
-        </Container>
+        <div className={`board-container ${theme}`}>
+            <Container fluid>
+                <h1 className="text-center my-4">Task Manager</h1>
+                <Row>
+                    <Col md={4}>
+                        <TaskList
+                            status="To Do"
+                            tasks={tasks.filter((task) => task.status === 'To Do')}
+                            onDropTask={handleDropTask}
+                            users={users}
+                        />
+                    </Col>
+                    <Col md={4}>
+                        <TaskList
+                            status="In Progress"
+                            tasks={tasks.filter((task) => task.status === 'In Progress')}
+                            onDropTask={handleDropTask}
+                            users={users}
+                        />
+                    </Col>
+                    <Col md={4}>
+                        <TaskList
+                            status="Done"
+                            tasks={tasks.filter((task) => task.status === 'Done')}
+                            onDropTask={handleDropTask}
+                            users={users}
+                        />
+                    </Col>
+                </Row>
+            </Container>
+        </div>
     );
 }
 

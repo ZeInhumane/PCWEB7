@@ -5,6 +5,7 @@ import { doc, updateDoc, deleteDoc, getDocs, collection } from 'firebase/firesto
 import { db } from '../firebase';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from '../ThemeContext';
 
 function TaskItem({ task, onDeleteTask }) {
     const [{ isDragging }, drag] = useDrag(() => ({
@@ -21,6 +22,7 @@ function TaskItem({ task, onDeleteTask }) {
     const [severity, setSeverity] = useState(task.severity);
     const [assignedTo, setAssignedTo] = useState(task.assignedTo || "");
     const [usersList, setUsersList] = useState([]);
+    const { theme } = useTheme();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -70,7 +72,7 @@ function TaskItem({ task, onDeleteTask }) {
 
     return (
         <>
-            <Card ref={drag} className="mb-2 shadow-sm" style={{ opacity: isDragging ? 0.5 : 1, borderLeft: `5px solid var(--bs-${getSeverityVariant()})` }}>
+            <Card ref={drag} className={`mb-2 shadow-sm ${theme === 'dark' ? 'text-white bg-dark' : ''}`} style={{ opacity: isDragging ? 0.5 : 1, borderLeft: `5px solid var(--bs-${getSeverityVariant()})` }}>
                 <Card.Body>
                     <Card.Title>{task.title}</Card.Title>
                     <Card.Text>{task.description}</Card.Text>

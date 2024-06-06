@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Navbar, Nav, Button, Modal, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Button, Modal } from 'react-bootstrap';
 import TaskForm from './TaskForm';
 import { useAuth } from '../AuthProvider';
-import { FaTasks, FaSignOutAlt, FaUserPlus, FaSignInAlt } from 'react-icons/fa';
+import { FaTasks, FaSignOutAlt, FaUserPlus, FaSignInAlt, FaMoon, FaSun } from 'react-icons/fa';
+import { useTheme } from '../ThemeContext';
 
 function CustomNavbar() {
     const { currentUser, logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const [showModal, setShowModal] = useState(false);
 
     const handleLogout = () => {
@@ -17,11 +19,14 @@ function CustomNavbar() {
 
     return (
         <>
-            <Navbar bg="primary" variant="dark" expand="lg" className="px-3">
+            <Navbar expand="lg" className={`px-3 navbar navbar-${theme}`}>
                 <Navbar.Brand href="/">Task Manager</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ml-auto">
+                        <Button variant="outline-light" onClick={toggleTheme} className="mr-2">
+                            {theme === 'light' ? <FaMoon /> : <FaSun />}
+                        </Button>
                         {currentUser ? (
                             <>
                                 <Button
@@ -66,3 +71,4 @@ function CustomNavbar() {
 }
 
 export default CustomNavbar;
+
